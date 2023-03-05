@@ -14,5 +14,6 @@ module.exports = {
     semi: ["off"],
     quotes: ["error", "double"],
     "no-underscore-dangle": ["off"],
+    "no-console": ["off"],
   },
 }
