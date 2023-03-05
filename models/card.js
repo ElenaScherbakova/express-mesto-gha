@@ -6,7 +6,7 @@ const cardSchema = new Schema({
   link,
   owner: id,
   likes: {
-    type: Schema.Types.ObjectId,
+    type: [{ type: Schema.Types.ObjectId, ref: "user" }],
     default: [],
   },
   createdAt: {
