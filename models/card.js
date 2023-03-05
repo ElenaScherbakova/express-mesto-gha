@@ -1,4 +1,4 @@
-const { Schema } = require("mongoose")
+const { Schema, model } = require("mongoose")
 const { field, link, id } = require("./types");
 
 const cardSchema = new Schema({
@@ -15,4 +15,4 @@ const cardSchema = new Schema({
   },
 })
 
-module.exports = cardSchema
+module.exports = model("card", cardSchema)

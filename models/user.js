@@ -1,10 +1,10 @@
-const mongoose = require("mongoose")
+const { Schema, model } = require("mongoose")
 const { field, link } = require("./types")
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   name: field,
   about: field,
   avatar: link,
 })
 
-module.exports = userSchema
+module.exports = model("user", userSchema)
