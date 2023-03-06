@@ -69,7 +69,7 @@ const deleteCard = (req, res) => {
         http500(res, "Невозможно удалить карточку.")
       })
   } else {
-    http400(res, `Карточка с id=${id} не существует.`)
+    http400(res, `Карточка с id=${cardId} не существует.`)
   }
 }
 
