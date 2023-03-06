@@ -45,10 +45,10 @@ const deleteCard = (req, res) => {
     Card.findById(cardId)
       .then((card) => {
         if (card) {
-          if (card.owner.equals(req.user.id)) {
-            return Card.deleteOne(card)
-          }
-          return Promise.resolve({ forbidden: true })
+          // if (card.owner.equals(req.user.id)) {
+          return Card.deleteOne(card)
+          // }
+          // return Promise.resolve({ forbidden: true })
         }
         return Promise.resolve({ notFound: true })
       })
