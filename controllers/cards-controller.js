@@ -69,7 +69,7 @@ const deleteCard = (req, res) => {
         http500(res, "Невозможно удалить карточку.")
       })
   } else {
-    http404Internal(res, cardId)
+    http400(res, `Карточка с id=${id} не существует.`)
   }
 }
 
@@ -100,7 +100,7 @@ const modifyLikes = (req, res, add) => {
       })
       .catch(() => http500(res, "Невозможно добавить like."))
   } else {
-    http404Internal(res, cardId)
+    http400(res, `Карточка с id=${cardId} не найдена.`)
   }
 }
 /**
