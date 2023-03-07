@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/ElenaScherbakova/express-mesto-gha.git"
   },
-  "author": "",
+  "author": "ElenaSherbakova",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ElenaScherbakova/express-mesto-gha/issues"

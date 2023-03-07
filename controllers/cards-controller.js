@@ -19,7 +19,7 @@ const createCard = (req, res) => {
       if (e.name === "ValidationError") {
         http400(res, "Объект карточки содержит ошибки.", e.errors)
       } else {
-        http500(res, "Невозможно создать карточку.")
+        http500(res, "На сервере произошла ошибка.")
       }
     })
 }
@@ -31,7 +31,7 @@ const getCards = (req, res) => {
   Card.find({})
     .populate("likes")
     .then((cards) => http200(res, cards))
-    .catch(() => http500(res, "Невозможно получить все Карточки."))
+    .catch(() => http500(res, "На сервере произошла ошибка."))
 }
 /**
  * Обработчик запроса DELETE /cards/:cardId.
@@ -67,7 +67,7 @@ const deleteCard = (req, res) => {
         }
       })
       .catch(() => {
-        http500(res, "Невозможно удалить карточку.")
+        http500(res, "На сервере произошла ошибка.")
       })
   } else {
     http400(res, `Карточка с id=${cardId} не существует.`)
@@ -99,7 +99,7 @@ const modifyLikes = (req, res, add) => {
           http404Internal(res, cardId)
         }
       })
-      .catch(() => http500(res, "Невозможно добавить like."))
+      .catch(() => http500(res, "На сервере произошла ошибка."))
   } else {
     http400(res, `Карточка с id=${cardId} не найдена.`)
   }

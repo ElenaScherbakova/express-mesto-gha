@@ -10,6 +10,19 @@ const field = {
 const link = {
   type: String,
   required: true,
+  validate: {
+    // Валидатор поддерживает URL с любым известным протоколом, в том числе и с data:
+    validator: (value) => {
+      try {
+        // eslint-disable-next-line no-new
+        new URL(value)
+        return true
+      } catch (e) {
+        return false
+      }
+    },
+    message: "Значение не является URL",
+  },
 }
 
 const id = {
