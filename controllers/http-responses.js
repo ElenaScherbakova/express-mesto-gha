@@ -6,6 +6,10 @@ const http400 = (res, message, errors = {}) => {
   res.status(400).send({ message, errors })
 }
 
+const http401 = (res, message) => {
+  res.status(401).send({ message })
+}
+
 const http403 = (res, message) => {
   res.status(403).send({ message })
 }
@@ -26,6 +30,7 @@ module.exports = {
   http200,
   http201,
   http400,
+  http401,
   http403,
   http404,
   http500,

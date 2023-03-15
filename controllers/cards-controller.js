@@ -1,7 +1,12 @@
 const { Types } = require("mongoose");
 const Card = require("../models/card")
 const {
-  http200, http500, http201, http400, http404,
+  http200,
+  http500,
+  http201,
+  http400,
+  http404,
+  http403,
 } = require("./http-responses");
 
 const http404Internal = (res, cardId) => http404(res, `Карточка с id=${cardId} не найдена.`)
@@ -12,8 +17,15 @@ const http404Internal = (res, cardId) => http404(res, `Карточка с id=${
  * Если карточка содержит ошибки, возвращает 400ю ошибку с описанием ошибок.
  */
 const createCard = (req, res) => {
-  const { name, link } = req.body
-  Card.create({ name, link, owner: req.user._id })
+  const {
+    name,
+    link,
+  } = req.body
+  Card.create({
+    name,
+    link,
+    owner: req.user._id,
+  })
     .then((card) => http201(res, card))
     .catch((e) => {
       if (e.name === "ValidationError") {
@@ -45,21 +57,24 @@ const deleteCard = (req, res) => {
     Card.findById(cardId)
       .then((card) => {
         if (card) {
-          // if (card.owner.equals(req.user.id)) {
-          return Card.deleteOne(card)
-          // }
-          // return Promise.resolve({ forbidden: true })
+          if (card.owner.equals(req.user._id)) {
+            return Card.deleteOne(card)
+          }
+          return Promise.resolve({ forbidden: true })
         }
         return Promise.resolve({ notFound: true })
       })
       .then((result) => {
-        const { notFound, forbidden, deletedCount } = result
+        const {
+          notFound,
+          forbidden,
+          deletedCount,
+        } = result
 
         if (deletedCount === 1) {
           http200(res, { message: "Карточка успешно удалена." })
         } else if (forbidden) {
-          // Тут падают тесты. А казалось бы, ни разу не было и вот опять.
-          // http403(res, "Только автор может удалять свои карточки.")
+          http403(res, "Только автор может удалять свои карточки.")
         } else if (notFound) {
           http404Internal(res, cardId)
         } else {
@@ -121,5 +136,9 @@ const removeLikes = (req, res) => {
 }
 
 module.exports = {
-  createCard, getCards, deleteCard, createLikes, removeLikes,
+  createCard,
+  getCards,
+  deleteCard,
+  createLikes,
+  removeLikes,
 }

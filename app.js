@@ -4,6 +4,11 @@ const express = require("express")
 const userRouter = require("./routes/user-router")
 const cardsRouter = require("./routes/cards-router")
 const { http404 } = require("./controllers/http-responses");
+const {
+  login,
+  createUser,
+} = require("./controllers/login-controller");
+const { checkToken } = require("./middlewares/auth");
 
 const { PORT = 3000 } = process.env
 
@@ -12,12 +17,9 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
     const app = express();
     app.use(cors())
     app.use(express.json())
-    app.use((req, res, next) => {
-      req.user = {
-        _id: "5d8b8592978f8bd833ca8133",
-      }
-      next()
-    })
+    app.post("/signin", login);
+    app.post("/signup", createUser);
+    app.use(checkToken)
     app.use("/users", userRouter)
     app.use("/cards", cardsRouter)
     app.use((req, res) => {

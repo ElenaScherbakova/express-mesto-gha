@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 
 const field = {
   type: String,
-  required: true,
   maxLength: 30,
   minLength: 2,
+  default: "",
 }
 
 const link = {
   type: String,
-  required: true,
+  default: "",
   validate: {
     // Валидатор поддерживает URL с любым известным протоколом, в том числе и с data:
     validator: (value) => {

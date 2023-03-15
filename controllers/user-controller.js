@@ -18,7 +18,7 @@ const validationCatch = (res, e) => {
  * Ответ содержит объект найденного пользователя.
  */
 const getUser = (req, res) => {
-  const { userId } = req.params
+  const userId = req.user._id
   if (Types.ObjectId.isValid(userId)) {
     User.findById(userId)
       .then((user) => {
@@ -56,8 +56,12 @@ const getUsers = (req, res) => {
  * Статус ответа 201.
  */
 const createUser = (req, res) => {
-  const { name, avatar, about } = req.body
-  User.create({ name, avatar, about })
+  const {
+    name, avatar, about, email, password,
+  } = req.body
+  User.create({
+    name, avatar, about, email, password,
+  })
     .then((user) => http201(res, user))
     .catch((e) => validationCatch(res, e))
 }
