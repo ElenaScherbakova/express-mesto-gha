@@ -13,7 +13,7 @@ const {
 
 const validationCatch = (res, e) => {
   if (e.name === "ValidationError") {
-    http400(res, e.message)
+    http400(res, e)
   } else {
     http500(res, "Невозможно создать пользователя.")
   }
