@@ -12,6 +12,7 @@ const {
   createUser,
 } = require("./controllers/login-controller");
 const { checkToken } = require("./middlewares/auth");
+const { validator } = require("./utils/utils");
 
 const { PORT = 3000 } = process.env
 
@@ -32,7 +33,7 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
             .required()
             .min(8),
           about: Joi.string().min(2).max(30),
-          avatar: Joi.string(),
+          avatar: Joi.string().custom(validator),
         }),
       }),
       createUser,

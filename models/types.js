@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { validator } = require("../utils/utils")
 
 const field = {
   type: String,
@@ -12,15 +13,7 @@ const link = {
   default: "",
   validate: {
     // Валидатор поддерживает URL с любым известным протоколом, в том числе и с data:
-    validator: (value) => {
-      try {
-        // eslint-disable-next-line no-new
-        const url = new URL(value)
-        return url.hostname !== ""
-      } catch (e) {
-        return false
-      }
-    },
+    validator,
     message: "Значение не является URL",
   },
 }

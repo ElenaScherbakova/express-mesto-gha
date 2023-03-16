@@ -7,7 +7,6 @@ const {
   http201,
   http400,
   http500,
-  http401,
   http200,
 } = require("./http-responses");
 
