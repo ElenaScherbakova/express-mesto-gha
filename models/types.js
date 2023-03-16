@@ -15,8 +15,8 @@ const link = {
     validator: (value) => {
       try {
         // eslint-disable-next-line no-new
-        new URL(value)
-        return true
+        const url = new URL(value)
+        return url.hostname !== ""
       } catch (e) {
         return false
       }
