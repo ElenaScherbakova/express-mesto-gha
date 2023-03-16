@@ -19,7 +19,6 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
   .then(() => {
     const app = express();
     app.use(cors())
-    app.use(errors())
     app.use(express.json())
     app.post("/signin", login);
     app.post(
@@ -41,6 +40,7 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
     app.use(checkToken)
     app.use("/users", userRouter)
     app.use("/cards", cardsRouter)
+    app.use(errors())
     app.use((req, res) => {
       http404(res, `Ресурс ${req.path} не найден.`)
     })
