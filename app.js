@@ -25,14 +25,14 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
       "/signup",
       celebrate({
         [Segments.BODY]: Joi.object().keys({
-          name: Joi.string().alphanum().min(2).max(30)
-            .required(),
-          email: Joi.string().required().email(),
+          name: Joi.string().alphanum().min(2).max(30),
+          email: Joi.string().email(),
           password: Joi.string()
             .pattern(/^[a-zA-Z0-9]{3,30}$/)
             .required()
             .min(8),
           about: Joi.string().min(2).max(30),
+          avatar: Joi.string(),
         }),
       }),
       createUser,
