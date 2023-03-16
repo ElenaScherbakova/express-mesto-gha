@@ -3,11 +3,7 @@ const http500 = (res, message) => {
 }
 
 const http400 = (res, err) => {
-  res.status(400).send({
-    message: err.message,
-    statusCode: 400,
-    error: "Bad Request",
-  })
+  res.status(400).send(err)
 }
 
 const http401 = (res, message) => {
