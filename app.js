@@ -33,7 +33,7 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
             .required()
             .min(8),
           about: Joi.string().min(2).max(30),
-          avatar: Joi.string().custom(validator),
+          avatar: Joi.string().custom((value) => validator(value)),
         }),
       }),
       createUser,
