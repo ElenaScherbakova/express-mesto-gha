@@ -1,3 +1,5 @@
+const { Types } = require("mongoose");
+
 const validator = (value) => {
   try {
     const url = new URL(value)
@@ -7,6 +9,11 @@ const validator = (value) => {
   }
 }
 
+const joiIdValidator = (value, helper) => (Types.ObjectId.isValid(value)
+  ? value
+  : helper.message({ custom: "Неверный id" }))
+
 module.exports = {
   validator,
+  joiIdValidator,
 }

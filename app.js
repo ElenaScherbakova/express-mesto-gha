@@ -21,19 +21,28 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
     const app = express();
     app.use(cors())
     app.use(express.json())
-    app.post("/signin", login);
+    app.post(
+      "/signin",
+      celebrate({
+        [Segments.BODY]: Joi.object().keys({
+          email: Joi.string().required().email(),
+          password: Joi.string().required(),
+        }),
+      }),
+      login,
+    )
     app.post(
       "/signup",
       celebrate({
         [Segments.BODY]: Joi.object().keys({
-          name: Joi.string().alphanum().min(2).max(30),
-          email: Joi.string().email(),
+          name: Joi.string().min(2).max(30),
+          email: Joi.string().required().email(),
           password: Joi.string()
-            .pattern(/^[a-zA-Z0-9]{3,30}$/)
-            .required()
-            .min(8),
+            .required(),
           about: Joi.string().min(2).max(30),
-          avatar: Joi.string().custom((value) => validator(value)),
+          avatar: Joi.string().custom((value, helper) => (validator(value)
+            ? value
+            : helper.message({ custom: "Неправильный URL" }))),
         }),
       }),
       createUser,

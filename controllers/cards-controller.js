@@ -97,27 +97,24 @@ const deleteCard = (req, res) => {
 const modifyLikes = (req, res, add) => {
   const { cardId } = req.params
   const { _id } = req.user
-  if (Types.ObjectId.isValid(cardId)) {
-    const action = add
-      ? "$addToSet"
-      : "$pull"
 
-    Card.findByIdAndUpdate({ _id: cardId }, {
-      [action]: {
-        likes: _id,
-      },
-    }, { returnDocument: "after" })
-      .then((card) => {
-        if (card) {
-          http200(res, card)
-        } else {
-          http404Internal(res, cardId)
-        }
-      })
-      .catch(() => http500(res, "На сервере произошла ошибка."))
-  } else {
-    http400(res, `Карточка с id=${cardId} не найдена.`)
-  }
+  const action = add
+    ? "$addToSet"
+    : "$pull"
+
+  Card.findByIdAndUpdate({ _id: cardId }, {
+    [action]: {
+      likes: _id,
+    },
+  }, { returnDocument: "after" })
+    .then((card) => {
+      if (card) {
+        http200(res, card)
+      } else {
+        http404Internal(res, cardId)
+      }
+    })
+    .catch(() => http500(res, "На сервере произошла ошибка."))
 }
 /**
  * Обработчик запроса PATCH /cards/:cardId/likes.

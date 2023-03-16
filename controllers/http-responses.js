@@ -2,8 +2,8 @@ const http500 = (res, message) => {
   res.status(500).send({ message })
 }
 
-const http400 = (res, err) => {
-  res.status(400).send(err)
+const http400 = (res, message) => {
+  res.status(400).send({ message })
 }
 
 const http401 = (res, message) => {
@@ -16,6 +16,9 @@ const http403 = (res, message) => {
 
 const http404 = (res, message) => {
   res.status(404).send({ message })
+}
+const http409 = (res, message) => {
+  res.status(409).send({ message })
 }
 
 const http200 = (res, data) => {
@@ -33,5 +36,6 @@ module.exports = {
   http401,
   http403,
   http404,
+  http409,
   http500,
 }

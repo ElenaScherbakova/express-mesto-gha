@@ -2,9 +2,13 @@ const { Types } = require("mongoose")
 const User = require("../models/user")
 const {
   http404, http200, http500, http201, http400,
+  http409,
 } = require("./http-responses");
 
 const validationCatch = (res, e) => {
+  if (e.code === 11000) {
+    http409(res, "Пользователь с таким email уже зарегистрирован")
+  }
   if (e.name === "ValidationError") {
     http400(res, "Объект пользователя содержит ошибки.", e.errors)
   } else {
@@ -12,13 +16,7 @@ const validationCatch = (res, e) => {
   }
 }
 
-/**
- * Обработчик запроса GET /users/:userId
- * Если пользователь не найден, сервер возвращает 404ю ошибку.
- * Ответ содержит объект найденного пользователя.
- */
-const getUser = (req, res) => {
-  const userId = req.user._id
+const findUser = (userId, res) => {
   if (Types.ObjectId.isValid(userId)) {
     User.findById(userId)
       .then((user) => {
@@ -34,6 +32,19 @@ const getUser = (req, res) => {
   } else {
     http400(res, `Пользователь с id=${userId} не найден. 404 ошибка.`)
   }
+}
+
+/**
+ * Обработчик запроса GET /users/:userId
+ * Если пользователь не найден, сервер возвращает 404ю ошибку.
+ * Ответ содержит объект найденного пользователя.
+ */
+const getMe = (req, res) => {
+  findUser(req.user._id, res)
+}
+
+const getUser = (req, res) => {
+  findUser(req.params.userId, res)
 }
 
 /**
@@ -104,5 +115,5 @@ const updateUserAvatar = (req, res) => {
 }
 
 module.exports = {
-  getUser, createUser, getUsers, updateUserInformation, updateUserAvatar,
+  getMe, getUser, createUser, getUsers, updateUserInformation, updateUserAvatar,
 }
