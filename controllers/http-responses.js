@@ -2,8 +2,8 @@ const http500 = (res, message) => {
   res.status(500).send({ message })
 }
 
-const http400 = (res) => {
-  res.status(400).send({})
+const http400 = (res, message) => {
+  res.status(400).send({ message })
 }
 
 const http401 = (res, message) => {
