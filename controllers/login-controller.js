@@ -27,7 +27,7 @@ const login = (req, res) => {
         const token = jwt.sign({ _id: user._id }, SECRET)
         http200(res, { token })
       } else {
-        http401(res, "Не правильный логин или пароль")
+        http400(res, "Не правильный логин или пароль")
       }
     })
     .catch(() => {
