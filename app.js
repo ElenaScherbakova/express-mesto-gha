@@ -1,7 +1,9 @@
 const { connect } = require("mongoose")
 const cors = require("cors")
 const express = require("express")
-const { celebrate, Joi, Segments, errors } = require("celebrate");
+const {
+  celebrate, Joi, Segments, errors,
+} = require("celebrate");
 const userRouter = require("./routes/user-router")
 const cardsRouter = require("./routes/cards-router")
 const { http404 } = require("./controllers/http-responses");
