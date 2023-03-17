@@ -1,4 +1,3 @@
-const { Types } = require("mongoose");
 const Card = require("../models/card")
 const {
   http200,
@@ -53,40 +52,36 @@ const getCards = (req, res) => {
  */
 const deleteCard = (req, res) => {
   const { cardId } = req.params
-  if (Types.ObjectId.isValid(cardId)) {
-    Card.findById(cardId)
-      .then((card) => {
-        if (card) {
-          if (card.owner.equals(req.user._id)) {
-            return Card.deleteOne(card)
-          }
-          return Promise.resolve({ forbidden: true })
+  Card.findById(cardId)
+    .then((card) => {
+      if (card) {
+        if (card.owner.equals(req.user._id)) {
+          return Card.deleteOne(card)
         }
-        return Promise.resolve({ notFound: true })
-      })
-      .then((result) => {
-        const {
-          notFound,
-          forbidden,
-          deletedCount,
-        } = result
+        return Promise.resolve({ forbidden: true })
+      }
+      return Promise.resolve({ notFound: true })
+    })
+    .then((result) => {
+      const {
+        notFound,
+        forbidden,
+        deletedCount,
+      } = result
 
-        if (deletedCount === 1) {
-          http200(res, { message: "Карточка успешно удалена." })
-        } else if (forbidden) {
-          http403(res, "Только автор может удалять свои карточки.")
-        } else if (notFound) {
-          http404Internal(res, cardId)
-        } else {
-          throw new Error("")
-        }
-      })
-      .catch(() => {
-        http500(res, "На сервере произошла ошибка.")
-      })
-  } else {
-    http400(res, `Карточка с id=${cardId} не существует.`)
-  }
+      if (deletedCount === 1) {
+        http200(res, { message: "Карточка успешно удалена." })
+      } else if (forbidden) {
+        http403(res, "Только автор может удалять свои карточки.")
+      } else if (notFound) {
+        http404Internal(res, cardId)
+      } else {
+        throw new Error("")
+      }
+    })
+    .catch(() => {
+      http500(res, "На сервере произошла ошибка.")
+    })
 }
 
 /**

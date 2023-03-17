@@ -1,4 +1,3 @@
-const { Types } = require("mongoose")
 const User = require("../models/user")
 const {
   http404, http200, http500, http201, http400,
@@ -17,21 +16,17 @@ const validationCatch = (res, e) => {
 }
 
 const findUser = (userId, res) => {
-  if (Types.ObjectId.isValid(userId)) {
-    User.findById(userId)
-      .then((user) => {
-        if (user) {
-          http200(res, user)
-        } else {
-          http404(res, `Пользователь с id=${userId} не найден.`)
-        }
-      })
-      .catch(() => {
-        http500(res, "Невозможно получить пользователя.")
-      })
-  } else {
-    http400(res, `Пользователь с id=${userId} не найден. 404 ошибка.`)
-  }
+  User.findById(userId)
+    .then((user) => {
+      if (user) {
+        http200(res, user)
+      } else {
+        http404(res, `Пользователь с id=${userId} не найден.`)
+      }
+    })
+    .catch(() => {
+      http500(res, "Невозможно получить пользователя.")
+    })
 }
 
 /**
