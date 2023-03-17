@@ -6,7 +6,7 @@ const {
 } = require("celebrate");
 const userRouter = require("./routes/user-router")
 const cardsRouter = require("./routes/cards-router")
-const { http404 } = require("./controllers/http-responses");
+const { http404, http500 } = require("./controllers/http-responses");
 const {
   login,
   createUser,
@@ -53,6 +53,23 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
     app.use(errors())
     app.use((req, res) => {
       http404(res, `Ресурс ${req.path} не найден.`)
+    })
+    app.use((err, req, res, next) => {
+      // https://expressjs.com/en/guide/error-handling.html
+      // So when you add a custom error handler, you must delegate to the default
+      // Express error handler, when the headers have already been sent to the client:
+      if (!res.headersSent) {
+        if (err.statusCode > 0) {
+          res
+            .status(err.statusCode)
+            .send({ message: err.message })
+        } else {
+          http500(res, "Непредвиденная ошибка сервера")
+        }
+        // Eslint-error: Expected to return a value at the end of arrow function  consistent-return
+        return null
+      }
+      return next(err)
     })
     app.listen(PORT, () => {
       console.log(`Сервер запущен на порту ${PORT}.`)
