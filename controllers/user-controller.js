@@ -1,6 +1,6 @@
 const User = require("../models/user")
 const {
-  http404, http200, http500,
+  http404, http200,
 } = require("./http-responses");
 
 const findUser = (userId, res) => {
