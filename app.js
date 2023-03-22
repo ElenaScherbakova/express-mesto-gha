@@ -50,10 +50,26 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
     app.use(checkToken)
     app.use("/users", userRouter)
     app.use("/cards", cardsRouter)
-    app.use(errors())
     app.use((req, res) => {
       http404(res, `Ресурс ${req.path} не найден.`)
     })
+    /*
+        https://github.com/arb/celebrate
+        errors([opts])
+
+        Returns a function with the error handler signature ((err, req, res, next)).
+        This should be placed with any other error handling middleware to catch celebrate errors.
+        If the incoming err object is an error originating from celebrate,
+        errors() will respond a pre-build error object.
+        Otherwise, it will call next(err) and will pass the error along and will need
+        to be processed by another error handler.
+
+        Исходя из вышесказанного, этот middleware должен быть сработать перед
+        главным обработчиком Ошибок.
+
+        Противном случае объект ошибки не будет сожержать поле statusCode.
+     */
+    app.use(errors())
     app.use((err, req, res, next) => {
       // https://expressjs.com/en/guide/error-handling.html
       // So when you add a custom error handler, you must delegate to the default

@@ -1,11 +1,9 @@
+const createError = require("http-errors")
 const Card = require("../models/card")
 const {
   http200,
-  http500,
   http201,
-  http400,
   http404,
-  http403,
 } = require("./http-responses");
 
 const http404Internal = (res, cardId) => http404(res, `Карточка с id=${cardId} не найдена.`)
@@ -24,15 +22,7 @@ const createCard = (req, res) => {
     name,
     link,
     owner: req.user._id,
-  })
-    .then((card) => http201(res, card))
-    .catch((e) => {
-      if (e.name === "ValidationError") {
-        http400(res, "Объект карточки содержит ошибки.", e.errors)
-      } else {
-        http500(res, "На сервере произошла ошибка.")
-      }
-    })
+  }).then((card) => http201(res, card))
 }
 /**
  * Обработчик запроса GET /cards.
@@ -42,7 +32,6 @@ const getCards = (req, res) => {
   Card.find({})
     .populate("likes")
     .then((cards) => http200(res, cards))
-    .catch(() => http500(res, "На сервере произошла ошибка."))
 }
 /**
  * Обработчик запроса DELETE /cards/:cardId.
@@ -50,37 +39,21 @@ const getCards = (req, res) => {
  * Если карточка не найдена возвращает 404ю ошибку.
  * Если пользователь не является создателем карточки, возвращает 403ю ошибку.
  */
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params
   Card.findById(cardId)
     .then((card) => {
       if (card) {
         if (card.owner.equals(req.user._id)) {
-          return Card.deleteOne(card)
+          Card.deleteOne(card).then(() => {
+            http200(res, { message: "Карточка успешно удалена." })
+          })
+        } else {
+          next(createError(403, "Только автор может удалять свои карточки"))
         }
-        return Promise.resolve({ forbidden: true })
-      }
-      return Promise.resolve({ notFound: true })
-    })
-    .then((result) => {
-      const {
-        notFound,
-        forbidden,
-        deletedCount,
-      } = result
-
-      if (deletedCount === 1) {
-        http200(res, { message: "Карточка успешно удалена." })
-      } else if (forbidden) {
-        http403(res, "Только автор может удалять свои карточки.")
-      } else if (notFound) {
-        http404Internal(res, cardId)
       } else {
-        throw new Error("")
+        next(createError(404, `Картчока с id=${cardId} не найдена`))
       }
-    })
-    .catch(() => {
-      http500(res, "На сервере произошла ошибка.")
     })
 }
 
@@ -109,7 +82,6 @@ const modifyLikes = (req, res, add) => {
         http404Internal(res, cardId)
       }
     })
-    .catch(() => http500(res, "На сервере произошла ошибка."))
 }
 /**
  * Обработчик запроса PATCH /cards/:cardId/likes.

@@ -1,19 +1,7 @@
 const User = require("../models/user")
 const {
-  http404, http200, http500, http201, http400,
-  http409,
+  http404, http200, http500,
 } = require("./http-responses");
-
-const validationCatch = (res, e) => {
-  if (e.code === 11000) {
-    http409(res, "Пользователь с таким email уже зарегистрирован")
-  }
-  if (e.name === "ValidationError") {
-    http400(res, "Объект пользователя содержит ошибки.", e.errors)
-  } else {
-    http500(res, "Невозможно создать пользователя.")
-  }
-}
 
 const findUser = (userId, res) => {
   User.findById(userId)
@@ -23,9 +11,6 @@ const findUser = (userId, res) => {
       } else {
         http404(res, `Пользователь с id=${userId} не найден.`)
       }
-    })
-    .catch(() => {
-      http500(res, "Невозможно получить пользователя.")
     })
 }
 
@@ -49,27 +34,6 @@ const getUser = (req, res) => {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => http200(res, users))
-    .catch(() => http500(res, "Невозможно получить всех пользователей."))
-}
-
-/**
- * Обработчик запроса POST /users.
- * Создает нового пользователя.
- * Если у пользователя отсутствует хотя бы одно необходимое поле,
- * сервер возвращает 400ю ошибку с описанием ошибок.
- *
- * Ответ содержит объект созданного пользователя.
- * Статус ответа 201.
- */
-const createUser = (req, res) => {
-  const {
-    name, avatar, about, email, password,
-  } = req.body
-  User.create({
-    name, avatar, about, email, password,
-  })
-    .then((user) => http201(res, user))
-    .catch((e) => validationCatch(res, e))
 }
 
 /**
@@ -81,7 +45,6 @@ const updateUserInternal = (id, res, update) => {
     .then((user) => {
       http200(res, user)
     })
-    .catch((e) => validationCatch(res, e))
 }
 
 /**
@@ -110,5 +73,5 @@ const updateUserAvatar = (req, res) => {
 }
 
 module.exports = {
-  getMe, getUser, createUser, getUsers, updateUserInformation, updateUserAvatar,
+  getMe, getUser, getUsers, updateUserInformation, updateUserAvatar,
 }
