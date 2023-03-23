@@ -29,6 +29,18 @@ const http201 = (res, data) => {
   res.status(201).send(data)
 }
 
+const controller = (handler) => async (req, res, next) => {
+  try {
+    const value = await handler(req, res)
+    if (value) http200(res, value)
+  } catch (e) {
+    next(e)
+  }
+}
+const wrap = (exports) => Object
+  .entries(exports)
+  .reduce((all, [key, value]) => ({ ...all, [key]: controller(value) }), {})
+
 module.exports = {
   http200,
   http201,
@@ -38,4 +50,5 @@ module.exports = {
   http404,
   http409,
   http500,
+  wrap,
 }

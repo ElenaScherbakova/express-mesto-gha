@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { http401 } = require("../controllers/http-responses");
+const createError = require("http-errors")
 
 const SECRET = "random-string"
 const checkToken = (req, res, next) => {
@@ -18,11 +18,8 @@ const checkToken = (req, res, next) => {
     }
   }
 
-  if (success) {
-    next()
-  } else {
-    http401(res, "Необходима авторизация")
-  }
+  if (success) next()
+  else next(createError(401, "Необходима авторизация"))
 }
 
 module.exports = { checkToken, SECRET }

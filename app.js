@@ -50,6 +50,27 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
     app.use(checkToken)
     app.use("/users", userRouter)
     app.use("/cards", cardsRouter)
+    // https://expressjs.com/en/starter/faq.html
+    /*
+        How do I handle 404 responses?
+        In Express, 404 responses are not the result of an error
+        (404 не является результатом ошибки),
+        so the error-handler middleware will not capture them.
+        (так что обработчик ошибок их не отловит)
+        This behavior is because a 404 response simply indicates the absence
+        of additional work to do; in other words, Express has executed all middleware functions and
+        routes, and found that none of them responded.
+        All you need to do is add a middleware function at the very bottom of the stack
+        (Все что вам нужно это добавить middleware функцию в самый конец стопки)
+        (below all other functions) to handle a 404 response:
+        ```
+        app.use((req, res, next) => {
+          res.status(404).send("Sorry can't find that!")
+        })
+        ```
+        Сделанно с соответствии с документацией!
+        Кидать ошибку что бы тут же поймать ее на две строчки ниже, нет ни какого смысла.
+     */
     app.use((req, res) => {
       http404(res, `Ресурс ${req.path} не найден.`)
     })
