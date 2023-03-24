@@ -51,7 +51,6 @@ connect("mongodb://127.0.0.1:27017/mestodb", {})
     app.use(checkToken)
     app.use("/users", userRouter)
     app.use("/cards", cardsRouter)
-    // https://expressjs.com/en/starter/faq.html
 
     app.use((req, res, next) => {
       next(createError(404, "Ресурс не найден"))
